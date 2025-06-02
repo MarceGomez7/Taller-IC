@@ -7,16 +7,31 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install dependencies
+          name: Instalar dependencias
           command: |
             pip install pillow flask
       - run:
-          name: Run test
+          name: Ejecutar tests
           command: |
-            python -m unittest discover -s src 
+            python -m unittest discover -s src
 
-#Define qué jobs correr y en qué orden.
+  deploy-to-render:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - run:
+          name: Deploy to Render
+          command: |
+            curl -X POST "https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys" \
+              -H "Authorization: Bearer $RENDER_API_KEY"
+
 workflows:
-  build-and-test-workflow:
+  sample:
     jobs:
       - build-and-test
+      - deploy-to-render:
+          requires:
+            - build-and-test  # solo si los tests pasaron
+          filters:
+            branches:
+              only: main  # solo en la rama main
