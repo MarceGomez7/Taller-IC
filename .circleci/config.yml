@@ -15,6 +15,7 @@ jobs:
           command: |
             python -m unittest discover -s src 
 
+#Define qué jobs correr y en qué orden.
 workflows:
   build-and-test-workflow:
     jobs:
