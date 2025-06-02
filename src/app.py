@@ -1,3 +1,9 @@
+import sys
+import os
+
+# Agregar la carpeta raíz del proyecto al sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from flask import Flask, render_template_string, url_for
 from src.logic import mensaje
 
@@ -5,10 +11,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    # Usamos el mensaje de la lógica
     msg = mensaje()
-    
-    # HTML básico con el mensaje y la imagen
     html = f"""
     <!DOCTYPE html>
     <html>
