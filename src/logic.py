@@ -1,2 +1,2 @@
 def mensaje():
-    return "¡Hola, clickeaste en el Botón!"
+    return "¡Hola, clickeaste el Botón!"
