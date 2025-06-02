@@ -7,13 +7,13 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Instalar dependencias
+          name: Install dependencies
           command: |
             pip install pillow
       - run:
-          name: Ejecutar tests
+          name: Run test
           command: |
-            python -m unittest discover -s src
+            python -m unittest discover
 
 workflows:
   build-and-test-workflow:
