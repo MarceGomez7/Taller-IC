@@ -9,7 +9,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            pip install pillow
+            pip install pillow flask
       - run:
           name: Run test
           command: |
