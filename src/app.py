@@ -1,7 +1,6 @@
 import sys
 import os
 
-# Agregar la carpeta raíz del proyecto al sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from flask import Flask, render_template_string
