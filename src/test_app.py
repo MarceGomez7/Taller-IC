@@ -2,14 +2,13 @@ import sys
 import os
 import unittest
 
-# Ajustar el sys.path para poder importar
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from src.logic import mensaje
+from src.app import mensaje  # Ahora importamos mensaje desde app.py
 
 class TestMensaje(unittest.TestCase):
     def test_mensaje(self):
-        self.assertEqual(mensaje(), "¡Hola, clickeaste en el Botón!")
+        self.assertEqual(mensaje(), "¡Universidad Tecnológica Nacional!")
 
 if __name__ == "__main__":
     unittest.main()

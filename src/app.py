@@ -5,13 +5,15 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from flask import Flask, render_template_string
-from src.logic import mensaje
+
+# Definir la función mensaje directamente aquí
+def mensaje():
+    return "¡Universidad Tecnológica Nacional!"
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-    # Página inicial con el botón
     html = """
     <!DOCTYPE html>
     <html>
@@ -44,9 +46,9 @@ def index():
         </style>
     </head>
     <body>
-        <h1>¡Presiona el botón!</h1>
+        <h1>¡Bienvenido, Marcelo!</h1>
         <form action="/mostrar" method="get">
-            <button type="submit">💥 Presionar 💥</button>
+            <button type="submit"> Presionar </button>
         </form>
     </body>
     </html>
@@ -55,7 +57,7 @@ def index():
 
 @app.route("/mostrar")
 def mostrar():
-    msg = mensaje()
+    msg = mensaje()  # Usamos la función mensaje definida en app.py
     html = f"""
     <!DOCTYPE html>
     <html>
