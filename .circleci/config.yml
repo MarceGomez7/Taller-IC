@@ -58,6 +58,12 @@ workflows:
   build-test-deploy-and-notify:
     jobs:
       - build-and-test
+      - notify-slack-on-failure:
+          requires:
+            - build-and-test  # Ahora se ejecuta si la build falla
+          filters:
+            branches:
+              only: main
       - notify-slack-on-build-success:
           requires:
             - build-and-test
@@ -66,19 +72,13 @@ workflows:
               only: main
       - deploy-to-render:
           requires:
-            - notify-slack-on-build-success  # Solo se ejecuta después de que la build pasa
+            - notify-slack-on-build-success
           filters:
             branches:
               only: main
       - notify-slack-on-deploy-success:
           requires:
-            - deploy-to-render  # Solo se ejecuta después del deploy exitoso
-          filters:
-            branches:
-              only: main
-      - notify-slack-on-failure:
-          requires:
-            - build-and-test  # Solo se ejecuta si la build falla
+            - deploy-to-render
           filters:
             branches:
               only: main
