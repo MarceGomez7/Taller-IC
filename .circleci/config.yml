@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  slack: circleci/slack@4.12.5
+
 jobs:
   build-and-test:
     docker:
@@ -8,12 +11,10 @@ jobs:
       - checkout
       - run:
           name: Install dependencies
-          command: |
-            pip install pillow flask
+          command: pip install pillow flask
       - run:
           name: Run tests
-          command: |
-            python -m unittest discover -s src
+          command: python -m unittest discover -s src
 
   deploy-to-render:
     docker:
@@ -25,13 +26,41 @@ jobs:
             curl -X POST "https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys" \
               -H "Authorization: Bearer $RENDER_API_KEY"
 
+  notify-slack-on-failure:
+    docker:
+      - image: cimg/python:3.11
+    steps:
+      - slack/notify:
+          channel: "${SLACK_CHANNEL}"
+          event: fail
+          template: basic_fail_1
+
+  notify-slack-on-success:
+    docker:
+      - image: cimg/python:3.11
+    steps:
+      - slack/notify:
+          channel: "${SLACK_CHANNEL}"
+          event: success
+          template: basic_success_1
+
 workflows:
-  build-test-and-deploy:
+  version: 2
+  build-test-deploy-and-notify:
     jobs:
       - build-and-test
       - deploy-to-render:
           requires:
             - build-and-test
+      - notify-slack-on-failure:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              only: main
+      - notify-slack-on-success:
+          requires:
+            - deploy-to-render
           filters:
             branches:
               only: main
