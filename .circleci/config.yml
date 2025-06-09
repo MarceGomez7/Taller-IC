@@ -64,9 +64,10 @@ workflows:
           filters:
             branches:
               only: main
+          when: on_success  # Solo cuando la build pasa
       - deploy-to-render:
           requires:
-            - build-and-test  # Aquí se asegura que se ejecute solo si build-and-test pasa
+            - notify-slack-on-build-success  # Solo se ejecuta después de que la build pasa
           filters:
             branches:
               only: main
@@ -78,7 +79,8 @@ workflows:
               only: main
       - notify-slack-on-failure:
           requires:
-            - build-and-test  # Si la build falla, se notifica en Slack
+            - build-and-test  # Solo se ejecuta si la build falla
           filters:
             branches:
               only: main
+          when: on_fail  # Esta se ejecuta cuando la build falla
