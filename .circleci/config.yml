@@ -41,7 +41,7 @@ jobs:
     steps:
       - slack/notify:
           channel: "${SLACK_CHANNEL}"
-          event: success  # Notificar cuando el deploy sea exitoso
+          event: pass  # Notificar cuando el deploy sea exitoso
           template: basic_success_1
 
   notify-slack-on-failure:
