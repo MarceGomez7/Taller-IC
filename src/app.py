@@ -5,9 +5,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from flask import Flask, render_template_string
 
-# Definir la función mensaje directamente aquí
 def mensaje():
-    return "¡Universidad Tecnológica!"
+    return "¡Universidad Tecnológica Nacional!"
 
 app = Flask(__name__)
 
@@ -56,7 +55,7 @@ def index():
 
 @app.route("/mostrar")
 def mostrar():
-    msg = mensaje()  # Usamos la función mensaje definida en app.py
+    msg = mensaje() 
     html = f"""
     <!DOCTYPE html>
     <html>

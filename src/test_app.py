@@ -4,7 +4,7 @@ import unittest
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from src.app import mensaje  # Ahora importamos mensaje desde app.py
+from src.app import mensaje 
 
 class TestMensaje(unittest.TestCase):
     def test_mensaje(self):
