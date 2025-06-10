@@ -15,18 +15,24 @@ jobs:
       - run:
           name: Run tests
           command: python -m unittest discover -s src
-      - slack/notify:                           # <— aquí, dentro del mismo job
+      - slack/notify:
           channel: "${SLACK_CHANNEL}"
-          event: fail                           # notificar si los tests fallan
+          event: fail
           template: basic_fail_1
+      - slack/notify:
+          channel: "${SLACK_CHANNEL}"
+          event: pass
+          template: basic_success_1
 
   deploy-to-render:
     docker:
       - image: cimg/base:stable
     steps:
-      - run: |
-          curl -X POST "https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys" \
-            -H "Authorization: Bearer $RENDER_API_KEY"
+      - run:
+          name: Deploy to Render
+          command: |
+            curl -X POST "https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys" \
+              -H "Authorization: Bearer $RENDER_API_KEY"
 
   notify-slack-on-deploy-success:
     docker:
@@ -45,6 +51,12 @@ workflows:
       - deploy-to-render:
           requires:
             - build-and-test
+          filters:
+            branches:
+              only: main
       - notify-slack-on-deploy-success:
           requires:
             - deploy-to-render
+          filters:
+            branches:
+              only: main
