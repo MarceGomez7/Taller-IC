@@ -4,7 +4,7 @@ orbs:
   slack: circleci/slack@4.12.5
 
 jobs:
-  build-and-test:
+  build:
     docker:
       - image: cimg/python:3.11
     steps:
@@ -34,7 +34,7 @@ jobs:
             curl -X POST "https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys" \
               -H "Authorization: Bearer $RENDER_API_KEY"
 
-  notify-slack-on-deploy-success:
+  notify_slack_deploy:
     docker:
       - image: cimg/python:3.11
     steps:
@@ -47,14 +47,14 @@ workflows:
   version: 2
   build-test-deploy-and-notify:
     jobs:
-      - build-and-test
+      - build
       - deploy-to-render:
           requires:
-            - build-and-test
+            - build
           filters:
             branches:
               only: main
-      - notify-slack-on-deploy-success:
+      - notify_slack_deploy:
           requires:
             - deploy-to-render
           filters:
