@@ -7,7 +7,7 @@ from flask import Flask, render_template_string
 
 # Definir la función mensaje directamente aquí
 def mensaje():
-    return "¡!"
+    return "¡Universidad Tecnológica Nacional!"
 
 app = Flask(__name__)
 
