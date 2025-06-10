@@ -15,25 +15,18 @@ jobs:
       - run:
           name: Run tests
           command: python -m unittest discover -s src
+      - slack/notify:                           # <— aquí, dentro del mismo job
+          channel: "${SLACK_CHANNEL}"
+          event: fail                           # notificar si los tests fallan
+          template: basic_fail_1
 
   deploy-to-render:
     docker:
       - image: cimg/base:stable
     steps:
-      - run:
-          name: Deploy to Render
-          command: |
-            curl -X POST "https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys" \
-              -H "Authorization: Bearer $RENDER_API_KEY"
-
-  notify-slack-on-build-success:
-    docker:
-      - image: cimg/python:3.11
-    steps:
-      - slack/notify:
-          channel: "${SLACK_CHANNEL}"
-          event: pass  # Notificar cuando la build pase
-          template: basic_success_1
+      - run: |
+          curl -X POST "https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys" \
+            -H "Authorization: Bearer $RENDER_API_KEY"
 
   notify-slack-on-deploy-success:
     docker:
@@ -41,45 +34,17 @@ jobs:
     steps:
       - slack/notify:
           channel: "${SLACK_CHANNEL}"
-          event: pass  # Notificar cuando el deploy sea exitoso
+          event: pass
           template: basic_success_1
-
-  notify-slack-on-failure:
-    docker:
-      - image: cimg/python:3.11
-    steps:
-      - slack/notify:
-          channel: "${SLACK_CHANNEL}"
-          event: fail  # Notificar cuando algo falle
-          template: basic_fail_1
 
 workflows:
   version: 2
   build-test-deploy-and-notify:
     jobs:
       - build-and-test
-      - notify-slack-on-build-success:
-          requires:
-            - build-and-test
-          filters:
-            branches:
-              only: main
       - deploy-to-render:
           requires:
-            - notify-slack-on-build-success  # Solo se ejecuta después de que la build pasa
-          filters:
-            branches:
-              only: main
+            - build-and-test
       - notify-slack-on-deploy-success:
           requires:
-            - deploy-to-render  # Solo se ejecuta después del deploy exitoso
-          filters:
-            branches:
-              only: main
-      - notify-slack-on-failure:
-          requires:
-            - build-and-test:
-                - failed  # Esto asegura que se ejecuta solo si la build falla
-          filters:
-            branches:
-              only: main
+            - deploy-to-render
