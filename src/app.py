@@ -6,7 +6,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from flask import Flask, render_template_string
 
 def mensaje():
-    return "¡Universidad Tecnológica Nacional!"
+    return "¡Universidad Tecnológica!"
 
 app = Flask(__name__)
 
