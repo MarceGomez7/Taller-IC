@@ -11,7 +11,7 @@ jobs:
       - checkout
       - run:
           name: Install dependencies
-          command: pip install -r requirement.txt
+          command: pip install -r requirements.txt
       - run:
           name: Run tests
           command: python -m unittest discover -s src
