@@ -11,17 +11,15 @@ jobs:
       - checkout
       - run:
           name: Install dependencies
-          command: pip install -r requerimientos.txt
+          command: pip install -r requirements.txt
       - run:
           name: Run tests
           command: python -m unittest discover -s src
-
       - slack/notify:
           channel: "${SLACK_CHANNEL}"
           event: fail
           template: basic_fail_1
           custom: '{"text":"¡Las *pruebas* han fallado! 🚨 Echa un vistazo a los logs."}'
-
       - slack/notify:
           channel: "${SLACK_CHANNEL}"
           event: pass
