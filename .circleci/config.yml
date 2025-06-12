@@ -11,18 +11,22 @@ jobs:
       - checkout
       - run:
           name: Install dependencies
-          command: pip install pillow flask
+          command: pip install -r requirements.txt
       - run:
           name: Run tests
           command: python -m unittest discover -s src
+
       - slack/notify:
           channel: "${SLACK_CHANNEL}"
           event: fail
           template: basic_fail_1
+          custom: '{"text":"¡Las *pruebas* han fallado! 🚨 Echa un vistazo a los logs."}'
+
       - slack/notify:
           channel: "${SLACK_CHANNEL}"
           event: pass
           template: basic_success_1
+          custom: '{"text":"¡Las *pruebas* han pasado! ✅ Todo listo para el siguiente paso."}'
 
   deploy-to-render:
     docker:
@@ -42,10 +46,11 @@ jobs:
           channel: "${SLACK_CHANNEL}"
           event: pass
           template: basic_success_1
+          custom: '{"text":"El *deploy* fue completado con éxito. :white_check_mark:"}'
 
 workflows:
   version: 2
-  build-test-deploy-and-notify:
+  build-test-deploy:
     jobs:
       - build
       - deploy-to-render:
